@@ -10821,6 +10821,7 @@ function stop_drawing_points_variable(){
      * @param {URL} videoSrc - The video url to use
      */
     function init(videoSrc) {
+      console.log("initializing");
         videoElement = document.createElement('video');
         videoElement.id = webgazer.params.videoElementId;
         videoElement.autoplay = true;

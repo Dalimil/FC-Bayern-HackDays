@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Gazer from './Gazer';
 import Tracking from './Tracking';
 
 class App extends Component {
@@ -48,6 +49,7 @@ class App extends Component {
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
+          <Gazer />
           <Tracking />
           <h1>Talk to us...</h1>
           <textarea ref={node => this.textareaNode = node} autoFocus></textarea>
