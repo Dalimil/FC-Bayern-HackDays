@@ -2,11 +2,19 @@ import React from 'react';
 
 class Gazer extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      faceDetected: false,
+      faceFirstDetected: null
+    };
+  }
+
   componentDidMount() {
-    setTimeout(this.setup, 5000);
+    setTimeout(() => this.setupVideo(), 4000);
   }
   
-  setup() {
+  setupVideo() {
     //start the webgazer tracker
     window.webgazer.setRegression('ridge') /* currently must set regression and tracker */
         .setTracker('clmtrackr')
@@ -17,13 +25,24 @@ class Gazer extends React.Component {
         .begin()
         .showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
 
+    setTimeout(() => this.checkIfReady(),100);
+  }
+
+  checkIfReady() {
+    if (window.webgazer.isReady()) {
+        this.setup();
+    } else {
+        setTimeout(() => this.checkIfReady(), 100);
+    }
+  }
+
+  setup() {
+
     var width = 320;
     var height = 240;
     var topDist = '0px';
     var leftDist = '0px';
 
-    //Set up the webgazer video feedback.
-    var setup = function() {
         console.log("calling setup for webgazer");
         //Set up video variable to store the camera feedback
         var video = document.getElementById('webgazerVideoFeed');
@@ -71,35 +90,40 @@ class Gazer extends React.Component {
         canvas.style.position = 'fixed';*/
 
         var cl = window.webgazer.getTracker().clm;
-        //console.log(cl);
+        //console.log(window.webgazer.getTracker());
        /* window.webgazer.getTracker().on('track', function(event) {
           console.log("bbbbbbbbbb ", event);
         });*/
 
         //This function draw the face of the user frame.
-        function drawLoop() {
+        const drawLoop = () => {
             window.requestAnimationFrame(drawLoop);
             overlay.getContext('2d').clearRect(0,0,width,height);
             if (cl.getCurrentPosition()) {
                 cl.draw(overlay);
+                const now = Date.now();
+                if (this.state.faceFirstDetected) {
+                  console.log(now - this.state.faceFirstDetected );
+                  if (now - this.state.faceFirstDetected > 3000) {
+                    this.setState({ faceDetected: true });
+                  }
+                } else {
+                  this.setState({ faceFirstDetected: now });
+                }
+            } else {
+              this.setState({
+                faceDetected: false,
+                faceFirstDetected: null
+              });
             }
         }
         drawLoop();
-    };
-
-    function checkIfReady() {
-        if (window.webgazer.isReady()) {
-            setup();
-        } else {
-            setTimeout(checkIfReady, 100);
-        }
-    }
-    setTimeout(checkIfReady,100);
   }
 
   render() {
     return (
-      <div></div>
+      <div>Face detected: {this.state.faceDetected ? "Yes" : "No"}.<br />
+        First detected: {this.state.faceFirstDetected}</div>
     );
   }
 }
