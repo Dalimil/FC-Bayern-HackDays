@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Tracking from './Tracking';
 
 class App extends Component {
 
   componentDidMount() {
-    this.speak('Hello World');
+    // this.speak('Hello World');
   }
 
   speak(text, alternativeVoice) {
@@ -41,18 +42,20 @@ class App extends Component {
       response.then(toSay => this.speak(toSay, true));
     });
   }
-  
+
   render() {
     return (
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
+          <Tracking />
           <h1>Talk to us...</h1>
           <textarea ref={node => this.textareaNode = node} autoFocus></textarea>
           <p>Your football player will talk back...</p>
           <a href="#" onClick={() => this.ask(this.textareaNode)}>Speak</a>
         </div>
         <p id="load">Thank you for supporting us. FC Bayern Munich</p>
+        
       </div>
     );
   }
