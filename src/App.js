@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import Gazer from './Gazer';
 import Tracking from './Tracking';
+import LogoDetection from './LogoDetection';
+import playerVideo from './talking.webm';
 
 class App extends Component {
 
@@ -77,10 +79,15 @@ class App extends Component {
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
+          <video width="100%" height="240" autoPlay loop>
+            <source src={playerVideo} type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
           <Gazer
             onFaceDetected={() => this.onFaceDetected()}
             onFaceLost={() => this.onFaceLost()} />
           <Tracking />
+          <LogoDetection />
           <h1>Talk to us...</h1>
           <textarea ref={node => this.textareaNode = node} autoFocus></textarea>
           <p>Your football player will talk back...</p>
