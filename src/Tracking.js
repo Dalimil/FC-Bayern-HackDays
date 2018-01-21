@@ -19,7 +19,7 @@ class Tracking extends React.Component {
     tracker.on('track', function(event) {
       const numOfFaces = event.data.length;
       window.numOfFaces = numOfFaces;
-      console.log("Num of faces: " + numOfFaces);
+      // console.log("Num of faces: " + numOfFaces);
       //context.clearRect(0, 0, canvas.width, canvas.height);
       /*event.data.forEach(function(rect) {
         context.strokeStyle = '#a64ceb';

@@ -5,6 +5,7 @@ import Gazer from './Gazer';
 import Tracking from './Tracking';
 import LogoDetection from './LogoDetection';
 import playerVideo from './talking.webm';
+import Microphone from './Microphone';
 
 class App extends Component {
 
@@ -79,7 +80,7 @@ class App extends Component {
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
-          <video width="100%" height="240" autoPlay loop>
+          <video width="100%" height="240"  loop muted autoPlay>
             <source src={playerVideo} type="video/webm" />
             Your browser does not support the video tag.
           </video>
@@ -88,10 +89,10 @@ class App extends Component {
             onFaceLost={() => this.onFaceLost()} />
           <Tracking />
           <LogoDetection />
-          <h1>Talk to us...</h1>
-          <textarea ref={node => this.textareaNode = node} autoFocus></textarea>
-          <p>Your football player will talk back...</p>
-          <a href="#" onClick={() => this.ask(this.textareaNode)}>Speak</a>
+          <Microphone />
+          <h1 style={{marginTop: "2em"}}>Talk to us...</h1>
+         {/* <textarea ref={node => this.textareaNode = node} autoFocus></textarea> */}
+          {/*<a href="#" onClick={() => this.ask(this.textareaNode)}>Speak</a>*/}
         </div>
         <p id="load">Thank you for supporting us. FC Bayern Munich</p>
         
