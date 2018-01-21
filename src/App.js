@@ -7,8 +7,14 @@ import Tracking from './Tracking';
 class App extends Component {
 
   componentDidMount() {
-    const s = 'http://144.217.88.211:5000/getDirections?origin=Rotkreuzplatz';
-    fetch(s, { mode: 'cors' }).then(x => x.json()).then(x => console.log(x));
+    this.origin = "Rotkreuzplatz";
+    this.speak("Welcome to " + this.origin);
+    window.setTimeout(() => this.speakDefaultTrainInfo(), 4000);
+  }
+
+  getDirections() {
+    const s = `http://144.217.88.211:5000/getDirections?origin=${this.origin}`;
+    return fetch(s, { mode: 'cors' }).then(x => x.json());
   }
 
   speak(text, alternativeVoice) {
@@ -23,7 +29,24 @@ class App extends Component {
   }
 
   onFaceDetected() {
-    this.speak("Hello there, how is it going?", false);
+    this.speak("Hello there, are you going to the match?", false);
+  }
+
+  onFaceLost() {
+    this.speakDefaultTrainInfo();
+  }
+
+  speakDefaultTrainInfo() {
+    this.getDirections().then(data => {
+      console.log(data);
+      if (data.routes && data.routes.length && data.routes[0].legs.length) {
+        const departure = data.routes[0].legs[0]["departure_time"].text;
+        const duration = data.routes[0].legs[0].duration.text;
+        this.speak(`Next train departs at ${departure} and takes ${duration} to reach the arena`);
+      } else {
+        this.speak("Next train should be here soon.");
+      }
+    });
   }
 
   getChatbotReply(text) {
@@ -54,7 +77,9 @@ class App extends Component {
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
-          <Gazer onFaceDetected={() => this.onFaceDetected()} />
+          <Gazer
+            onFaceDetected={() => this.onFaceDetected()}
+            onFaceLost={() => this.onFaceLost()} />
           <Tracking />
           <h1>Talk to us...</h1>
           <textarea ref={node => this.textareaNode = node} autoFocus></textarea>

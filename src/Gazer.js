@@ -6,7 +6,8 @@ class Gazer extends React.Component {
     super(props);
     this.state = {
       faceDetected: false,
-      faceFirstDetected: null
+      faceFirstDetected: null,
+      faceFirstLost: null
     };
   }
 
@@ -99,9 +100,9 @@ class Gazer extends React.Component {
         const drawLoop = () => {
             window.requestAnimationFrame(drawLoop);
             overlay.getContext('2d').clearRect(0,0,width,height);
+            const now = Date.now();
             if (cl.getCurrentPosition()) {
                 cl.draw(overlay);
-                const now = Date.now();
                 if (!this.state.faceDetected && this.state.faceFirstDetected) {
                   console.log(now - this.state.faceFirstDetected );
                   if (now - this.state.faceFirstDetected > 5000) {
@@ -111,11 +112,27 @@ class Gazer extends React.Component {
                 } else {
                   this.setState({ faceFirstDetected: now });
                 }
+                this.setState({ faceFirstLost: null });
             } else {
-              this.setState({
-                faceDetected: false,
-                faceFirstDetected: null
-              });
+              // we cannot see a face
+              if (this.state.faceFirstLost) {
+                if(now - this.state.faceFirstLost > 3000) {
+                  // couldn't see it for a while
+                  if(this.state.faceDetected) {
+                    this.props.onFaceLost();
+                  }
+                  this.setState({
+                    faceDetected: false,
+                    faceFirstDetected: null,
+                    faceFirstLost: null
+                  });
+                }
+              } else {
+                // first time we lost it
+                this.setState({
+                  faceFirstLost: now
+                });
+              }
             }
         }
         drawLoop();
