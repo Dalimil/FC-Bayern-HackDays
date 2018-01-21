@@ -7,7 +7,8 @@ import Tracking from './Tracking';
 class App extends Component {
 
   componentDidMount() {
-    // this.speak('Hello World');
+    const s = 'http://144.217.88.211:5000/getDirections?origin=Rotkreuzplatz';
+    fetch(s, { mode: 'cors' }).then(x => x.json()).then(x => console.log(x));
   }
 
   speak(text, alternativeVoice) {
@@ -19,6 +20,10 @@ class App extends Component {
       };
       window.responsiveVoice.speak(text, alternativeVoice ? "UK English Female" : "UK English Male", config);
     });
+  }
+
+  onFaceDetected() {
+    this.speak("Hello there, how is it going?", false);
   }
 
   getChatbotReply(text) {
@@ -49,7 +54,7 @@ class App extends Component {
       <div>
         <div id="message">
           <h2>Welcome FC Bayern Fans</h2>
-          <Gazer />
+          <Gazer onFaceDetected={() => this.onFaceDetected()} />
           <Tracking />
           <h1>Talk to us...</h1>
           <textarea ref={node => this.textareaNode = node} autoFocus></textarea>

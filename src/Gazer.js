@@ -102,10 +102,11 @@ class Gazer extends React.Component {
             if (cl.getCurrentPosition()) {
                 cl.draw(overlay);
                 const now = Date.now();
-                if (this.state.faceFirstDetected) {
+                if (!this.state.faceDetected && this.state.faceFirstDetected) {
                   console.log(now - this.state.faceFirstDetected );
-                  if (now - this.state.faceFirstDetected > 3000) {
+                  if (now - this.state.faceFirstDetected > 5000) {
                     this.setState({ faceDetected: true });
+                    this.props.onFaceDetected();
                   }
                 } else {
                   this.setState({ faceFirstDetected: now });
